@@ -1,0 +1,105 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.pd-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* TopBar styles start */
+.pd-top-bar {
+  width: 100vw;
+  padding: 0.75rem 0.75rem 0 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.pd-top-bar .pd-top-bar-mode-switcher {
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+}
+
+.pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn {
+  box-sizing: border-box;
+  padding: 6px 12px;
+  background-color: #fff;
+  color: #212529;
+  border: none;
+  cursor: pointer;
+}
+
+.pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn.active {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn:first-child {
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+
+.pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn:last-child {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
+.pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn:nth-child(2) {
+  padding: 6px 10px;
+  border-left: 1px solid #ced4da;
+  border-right: 1px solid #ced4da;
+}
+/* TopBar styles end */
+
+/* Editor styles start */
+.pd-editor {
+  width: 100vw;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-shrink: 0;
+  flex-grow: 1;
+}
+
+.pd-editor .pd-edit-view,
+.pd-editor .pd-read-view {
+  height: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  color: #212529;
+  overflow: auto;
+  flex-shrink: 0;
+  flex-basis: 0;
+  flex-grow: 1;
+}
+
+.pd-editor .pd-edit-view textarea {
+  width: 100%;
+  min-height: 100%;
+  display: block;
+  box-sizing: border-box;
+  border-radius: 0.375rem;
+  border: none;
+  resize: none;
+  outline: none;
+}
+
+.pd-editor.pd-mode-both .pd-edit-view {
+  margin-right: 0.375rem;
+}
+
+.pd-editor.pd-mode-both .pd-read-view {
+  margin-left: 0.375rem;
+}
+/* Editor styles end */
