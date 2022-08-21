@@ -1,6 +1,6 @@
 /** @jsx h */
-import { h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { h, render } from "preact";
+import { useEffect, useState, useRef } from "preact/hooks";
 import showdown, { Converter } from "showdown";
 
 interface EditorProps {
@@ -8,27 +8,60 @@ interface EditorProps {
   allowMode: "edit" | "read" | "both";
 }
 
+let shadow: ShadowRoot | null = null;
+let shadowRoot: HTMLDivElement | null = null;
 let converter: Converter | null = null;
 export default function Editor(props: EditorProps) {
   const [mode, setMode] = useState(props.allowMode);
   const [displayContent, setDisplayContent] = useState("");
   const [convertedContent, setConvertedContent] = useState("");
 
+  // DOM to contain shadow root
+  const shadowRootRef = useRef(null);
+
+  // Render converted content to shadow root
+  const renderContentToShadow = () => {
+    if (shadowRootRef && shadowRootRef.current) {
+      if (!shadow) {
+        shadow = (shadowRootRef.current as HTMLDivElement).attachShadow({
+          mode: "open",
+        });
+      }
+      if (!shadowRoot) {
+        shadowRoot = document.createElement("div");
+        shadowRoot.id = "shadow-root";
+        shadow?.appendChild(shadowRoot);
+      }
+      render(
+        <div dangerouslySetInnerHTML={{ __html: convertedContent }} />,
+        shadowRoot
+      );
+    }
+  };
+
   // Event listener
   const modeChangeListener = (e: CustomEvent) => {
-    if (e.detail && props.allowMode === "both") {
+    if (
+      e.detail &&
+      (props.allowMode === e.detail || props.allowMode === "both")
+    ) {
       setMode(e.detail);
     }
   };
 
   // Init event listeners
   useEffect(() => {
-    window.addEventListener("ModeChange", modeChangeListener);
+    addEventListener("ModeChange", modeChangeListener);
 
     return () => {
-      window.removeEventListener("ModeChange", modeChangeListener);
+      removeEventListener("ModeChange", modeChangeListener);
     };
   }, []);
+
+  // Re-render when converted content changes
+  useEffect(() => {
+    renderContentToShadow();
+  }, [convertedContent, shadowRootRef]);
 
   // Init conversion
   useEffect(() => {
@@ -52,27 +85,20 @@ export default function Editor(props: EditorProps) {
 
   return (
     <div className={`pd-editor pd-mode-${mode}`}>
-      {mode !== "read"
-        ? (
-          <div className="pd-edit-view">
-            <textarea
-              placeholder="Some Markdown here"
-              onInput={(e) => {
-                convertText((e.target as HTMLInputElement).value);
-              }}
-              value={displayContent}
-            />
-          </div>
-        )
-        : null}
-      {mode !== "edit"
-        ? (
-          <div
-            className="pd-read-view"
-            dangerouslySetInnerHTML={{ __html: convertedContent }}
+      {props.allowMode !== "read" ? (
+        <div className="pd-edit-view">
+          <textarea
+            placeholder="Some Markdown here"
+            onInput={(e) => {
+              convertText((e.target as HTMLInputElement).value);
+            }}
+            value={displayContent}
           />
-        )
-        : null}
+        </div>
+      ) : null}
+      {props.allowMode !== "edit" ? (
+        <div className="pd-read-view" ref={shadowRootRef} />
+      ) : null}
     </div>
   );
 }

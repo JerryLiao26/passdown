@@ -11,22 +11,25 @@ export default function TopBar(props: TopBarProps) {
 
   // Event listener
   const modeChangeListener = (e: CustomEvent) => {
-    if (e.detail && props.allowMode === "both") {
+    if (
+      e.detail &&
+      (props.allowMode === e.detail || props.allowMode === "both")
+    ) {
       setMode(e.detail);
     }
   };
 
   // Event dispatche
   const modeChangeDispatcher = (mode: string) => {
-    window.dispatchEvent(new CustomEvent("ModeChange", { detail: mode }));
+    dispatchEvent(new CustomEvent("ModeChange", { detail: mode }));
   };
 
   // Init event listeners
   useEffect(() => {
-    window.addEventListener("ModeChange", modeChangeListener);
+    addEventListener("ModeChange", modeChangeListener);
 
     return () => {
-      window.removeEventListener("ModeChange", modeChangeListener);
+      removeEventListener("ModeChange", modeChangeListener);
     };
   }, []);
 
@@ -34,7 +37,9 @@ export default function TopBar(props: TopBarProps) {
     <div className="pd-top-bar">
       <div className="pd-top-bar-mode-switcher">
         <button
-          className={`pd-top-bar-btn ${mode === "edit" ? "active" : ""}`}
+          className={`pd-top-bar-btn${mode === "edit" ? " active" : ""}${
+            props.allowMode === "read" ? " disabled" : ""
+          }`}
           id="edit"
           type="button"
           onClick={() => {
@@ -44,7 +49,9 @@ export default function TopBar(props: TopBarProps) {
           Edit
         </button>
         <button
-          className={`pd-top-bar-btn ${mode === "read" ? "active" : ""}`}
+          className={`pd-top-bar-btn${mode === "read" ? " active" : ""}${
+            props.allowMode === "edit" ? " disabled" : ""
+          }`}
           id="read"
           type="button"
           onClick={() => {
@@ -54,7 +61,9 @@ export default function TopBar(props: TopBarProps) {
           Read
         </button>
         <button
-          className={`pd-top-bar-btn ${mode === "both" ? "active" : ""}`}
+          className={`pd-top-bar-btn${mode === "both" ? " active" : ""}${
+            props.allowMode !== "both" ? " disabled" : ""
+          }`}
           id="both"
           type="button"
           onClick={() => {

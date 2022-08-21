@@ -6,16 +6,18 @@
 .pd-page {
   width: 100vw;
   height: 100vh;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   overflow: hidden;
 }
 
 /* TopBar styles start */
 .pd-top-bar {
   width: 100vw;
-  padding: 0.75rem 0.75rem 0 0.75rem;
   display: flex;
+  margin-bottom: 0.75rem;
   justify-content: space-between;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -41,6 +43,13 @@
   color: #fff;
 }
 
+.pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn.disabled {
+  background-color: #e9ecef;
+  color: #212529;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn:first-child {
   border-top-left-radius: 0.375rem;
   border-bottom-left-radius: 0.375rem;
@@ -60,8 +69,7 @@
 
 /* Editor styles start */
 .pd-editor {
-  width: 100vw;
-  padding: 0.75rem;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
@@ -72,11 +80,12 @@
 
 .pd-editor .pd-edit-view,
 .pd-editor .pd-read-view {
-  height: 100%;
+  height: calc(
+    100vh - 0.75rem * 3 - 28px
+  ); /* Exact height to prevent flex height expansion */
   border: 1px solid #ced4da;
   border-radius: 0.375rem;
   box-sizing: border-box;
-  padding: 0.75rem;
   color: #212529;
   overflow: auto;
   flex-shrink: 0;
@@ -89,10 +98,15 @@
   min-height: 100%;
   display: block;
   box-sizing: border-box;
+  padding: 0.375rem;
   border-radius: 0.375rem;
   border: none;
   resize: none;
   outline: none;
+}
+
+.pd-editor .pd-read-view {
+  padding: 0.375rem;
 }
 
 .pd-editor.pd-mode-both .pd-edit-view {
@@ -101,5 +115,13 @@
 
 .pd-editor.pd-mode-both .pd-read-view {
   margin-left: 0.375rem;
+}
+
+.pd-editor.pd-mode-edit .pd-read-view {
+  display: none;
+}
+
+.pd-editor.pd-mode-read .pd-edit-view {
+  display: none;
 }
 /* Editor styles end */
