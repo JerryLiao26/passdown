@@ -134,8 +134,8 @@ button {
 }
 
 .pd-top-bar .pd-top-bar-tool-icons {
-  height: 28px;
-  line-height: 26px;
+  height: 30px;
+  line-height: 28px;
   box-sizing: border-box;
   padding: 0 8px;
   border: 1px solid #ced4da;
@@ -171,7 +171,7 @@ button {
 .pd-editor .pd-edit-view,
 .pd-editor .pd-read-view {
   height: calc(
-    100vh - 0.75rem * 3 - 28px
+    100vh - 0.75rem * 3 - 30px
   ); /* Exact height to prevent flex height expansion */
   border: 1px solid #ced4da;
   border-radius: 0.375rem;
