@@ -1,10 +1,13 @@
 /** @jsx h */
 import { h } from "preact";
 import { useState, useEffect } from "preact/hooks";
+import { showLoading, hideLoading } from "utils/ui.ts";
 
 export default function LoginFrame() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const checkUserLogin = async () => {
     const resp = await fetch("/api/user/login");
@@ -38,31 +41,43 @@ export default function LoginFrame() {
     checkUserLogin();
   }, []);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    showLoading();
     if (email && password) {
-      doUserLogin();
+      await doUserLogin();
     }
+
+    // Set error
+    if (!email) {
+      setEmailError(true);
+    }
+    if (!password) {
+      setPasswordError(true);
+    }
+    hideLoading();
   };
 
   return (
     <div className="pd-login-frame">
       <span className="pd-login-input-label">Email</span>
       <input
-        className="pd-login-input"
+        className={`pd-login-input${emailError ? " error" : ""}`}
         type="text"
         placeholder="Your email"
         value={email}
         onInput={(e) => {
+          setEmailError(false);
           setEmail((e.target as HTMLInputElement).value);
         }}
       />
       <span className="pd-login-input-label">Password</span>
       <input
-        className="pd-login-input"
+        className={`pd-login-input${passwordError ? " error" : ""}`}
         type="password"
         placeholder="Your password"
         value={password}
         onInput={(e) => {
+          setPasswordError(false);
           setPassword((e.target as HTMLInputElement).value);
         }}
       />

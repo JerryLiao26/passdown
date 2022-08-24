@@ -4,7 +4,7 @@ import {
   makeErrorResponse,
   makeSuccessResponse,
   setToken,
-} from "../../../utils.ts";
+} from "utils/server.ts";
 
 export const handler: Handlers = {
   GET(req: Request) {

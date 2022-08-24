@@ -26,7 +26,7 @@ textarea {
   box-sizing: border-box;
   border-radius: 0.375rem;
   border: 1px solid #ced4da;
-  font-size: 1rem;
+  font-size: 14px;
   outline: none;
 }
 
@@ -49,11 +49,59 @@ button {
   line-height: 16px;
   color: #212529;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 14px;
   border: 1px solid #ced4da;
   border-radius: 0.375rem;
 }
 /* Global form styles end */
+
+/* Loading styles start */
+/* Loading spin from https://loading.io/css/ */
+.pd-loading-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-loading-cover .pd-loading-spin {
+  display: inline-block;
+  transform: translateZ(1px);
+}
+
+.pd-loading-cover .pd-loading-spin .pd-loading-spin-inner {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pd-loading-spin 5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes pd-loading-spin {
+  0%,
+  100% {
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(1800deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: rotateY(3600deg);
+  }
+}
+/* Loading styles end */
 
 /* Login frame styles start */
 .pd-login-frame {
@@ -63,7 +111,6 @@ button {
   border-radius: 0.375rem;
   box-sizing: border-box;
   padding: 16px;
-  font-size: 1rem;
   color: #212529;
   display: flex;
   flex-direction: column;
@@ -73,8 +120,13 @@ button {
   margin-bottom: 8px;
 }
 
+.pd-login-frame .pd-login-input.error {
+  border-color: #dc3545;
+}
+
 .pd-login-frame .pd-login-input-label {
   margin-bottom: 4px;
+  font-size: 14px;
 }
 
 .pd-login-frame .pd-login-btn {
@@ -97,7 +149,7 @@ button {
   border: 1px solid #ced4da;
   border-radius: 0.375rem;
   box-sizing: border-box;
-  font-size: 1rem;
+  font-size: 14px;
 }
 
 .pd-top-bar .pd-top-bar-mode-switcher .pd-top-bar-btn {
@@ -146,6 +198,12 @@ button {
   margin-right: 16px;
   font-size: 16px;
   cursor: pointer;
+  height: 16px;
+  width: 16px;
+}
+
+.pd-top-bar .pd-top-bar-tool-icons i.bi::before {
+  line-height: unset;
 }
 
 .pd-top-bar .pd-top-bar-tool-icons i.bi:hover {

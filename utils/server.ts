@@ -2,7 +2,6 @@ import { setCookie, getCookies, deleteCookie } from "$http/cookie.ts";
 
 export function checkToken(req: Request) {
   const cookies = getCookies(req.headers);
-  console.log("DIOR::", cookies);
   if (cookies && cookies["pd-user-token"]) {
     return true;
   }
@@ -44,31 +43,4 @@ export function makeErrorResponse() {
       headers: { "Content-Type": "application/json" },
     }
   );
-}
-
-export function showLoading() {
-  if (document && document.body) {
-    const coverEle = document.body.querySelector(".pd-cover");
-    if (!coverEle) {
-      const newCoverEle = document.createElement("div");
-      newCoverEle.className = "pd-cover";
-      newCoverEle.style.position = "fixed";
-      newCoverEle.style.top = "0";
-      newCoverEle.style.left = "0";
-      newCoverEle.style.right = "0";
-      newCoverEle.style.bottom = "0";
-      newCoverEle.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-      newCoverEle.style.zIndex = "9";
-      document.body.appendChild(newCoverEle);
-    }
-  }
-}
-
-export function hideLoading() {
-  if (document && document.body) {
-    const coverEle = document.body.querySelector(".pd-cover");
-    if (coverEle) {
-      document.body.removeChild(coverEle);
-    }
-  }
 }

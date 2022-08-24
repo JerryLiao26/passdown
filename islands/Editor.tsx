@@ -2,7 +2,7 @@
 import { h, render } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import showdown, { Converter } from "showdown";
-import { showLoading, hideLoading } from "../utils.ts";
+import { showLoading, hideLoading } from "utils/ui.ts";
 
 interface EditorProps {
   id: string;

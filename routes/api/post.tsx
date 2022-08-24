@@ -3,7 +3,7 @@ import {
   checkToken,
   makeErrorResponse,
   makeSuccessResponse,
-} from "../../utils.ts";
+} from "utils/server.ts";
 
 export const handler: Handlers = {
   async GET(req: Request) {
