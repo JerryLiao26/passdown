@@ -3,18 +3,26 @@
 // This file is automatically updated during development when running `dev.ts`.
 
 import * as $0 from "./routes/_app.tsx";
-import * as $1 from "./routes/index.tsx";
+import * as $1 from "./routes/api/post.tsx";
+import * as $2 from "./routes/api/user/login.tsx";
+import * as $3 from "./routes/index.tsx";
+import * as $4 from "./routes/login.tsx";
 import * as $$0 from "./islands/Editor.tsx";
-import * as $$1 from "./islands/TopBar.tsx";
+import * as $$1 from "./islands/LoginFrame.tsx";
+import * as $$2 from "./islands/TopBar.tsx";
 
 const manifest = {
   routes: {
     "./routes/_app.tsx": $0,
-    "./routes/index.tsx": $1,
+    "./routes/api/post.tsx": $1,
+    "./routes/api/user/login.tsx": $2,
+    "./routes/index.tsx": $3,
+    "./routes/login.tsx": $4,
   },
   islands: {
     "./islands/Editor.tsx": $$0,
-    "./islands/TopBar.tsx": $$1,
+    "./islands/LoginFrame.tsx": $$1,
+    "./islands/TopBar.tsx": $$2,
   },
   baseUrl: import.meta.url,
 };

@@ -2,9 +2,10 @@
 import { h, render } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import showdown, { Converter } from "showdown";
+import { showLoading, hideLoading } from "../utils.ts";
 
 interface EditorProps {
-  content: string;
+  id: string;
   allowMode: "edit" | "read" | "both";
 }
 
@@ -97,6 +98,7 @@ export default function Editor(props: EditorProps) {
 
   // Init event listeners
   useEffect(() => {
+    showLoading();
     addEventListener("ModeChange", modeChangeListener);
 
     return () => {
@@ -121,10 +123,19 @@ export default function Editor(props: EditorProps) {
 
   // Init conversion
   useEffect(() => {
-    if (props.content) {
-      convertText(props.content);
-    }
-  }, [props.content]);
+    const loadPost = async () => {
+      if (props.id) {
+        const resp = await fetch("/api/post");
+        const respJson = await resp.json();
+        if (respJson.success) {
+          setDisplayContent(respJson.data);
+          convertText(respJson.data);
+          hideLoading();
+        }
+      }
+    };
+    loadPost();
+  }, [props.id]);
 
   const convertText = (text: string) => {
     // Init converter

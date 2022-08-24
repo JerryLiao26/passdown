@@ -8,6 +8,7 @@ interface TopBarProps {
 
 export default function TopBar(props: TopBarProps) {
   const [mode, setMode] = useState(props.allowMode);
+  const [isLogin, setIsLogin] = useState(false);
 
   // Event listener
   const modeChangeListener = (e: CustomEvent) => {
@@ -24,8 +25,21 @@ export default function TopBar(props: TopBarProps) {
     dispatchEvent(new CustomEvent("ModeChange", { detail: mode }));
   };
 
+  const checkUserLogin = async () => {
+    const resp = await fetch("/api/user/login");
+    const respJson = await resp.json();
+    if (respJson.success) {
+      setIsLogin(true);
+      return true;
+    }
+    // Redirect to login page if not valid
+    location.href = "/login";
+    return false;
+  };
+
   // Init event listeners
   useEffect(() => {
+    checkUserLogin();
     addEventListener("ModeChange", modeChangeListener);
 
     return () => {
@@ -73,6 +87,13 @@ export default function TopBar(props: TopBarProps) {
           Both
         </button>
       </div>
+      {isLogin ? (
+        <div className="pd-top-bar-tool-icons">
+          <i className="bi bi-house-door" />
+          <i className="bi bi-share" />
+          <i className="bi bi-gear" />
+        </div>
+      ) : null}
     </div>
   );
 }
