@@ -5,6 +5,7 @@ import {
   makeSuccessResponse,
   setToken,
 } from "utils/server.ts";
+import { find } from "utils/db.ts";
 
 export const handler: Handlers = {
   GET(req: Request) {
@@ -20,9 +21,11 @@ export const handler: Handlers = {
   async POST(req: Request) {
     const reqJson = await req.json();
     if (reqJson.email && reqJson.password) {
-      const successResponse = makeSuccessResponse(true);
-      setToken(successResponse);
-      return successResponse;
+      if (find("User", { email: reqJson.email, password: reqJson.password })) {
+        const successResponse = makeSuccessResponse(true);
+        setToken(successResponse);
+        return successResponse;
+      }
     }
     return makeErrorResponse();
   },

@@ -17,7 +17,7 @@ export function setToken(res: Response) {
 }
 
 export function clearToken(res: Response) {
-  deleteCookie(res.headers, "pd-user-token");
+  deleteCookie(res.headers, "pd-user-token", { path: "/" });
 }
 
 export function makeSuccessResponse(

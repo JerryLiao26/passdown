@@ -249,6 +249,7 @@ button {
 .pd-editor .pd-edit-view textarea::-webkit-scrollbar,
 .pd-editor .pd-read-view::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 .pd-editor .pd-edit-view textarea::-webkit-scrollbar-track,

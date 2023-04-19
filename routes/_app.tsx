@@ -10,8 +10,8 @@ export default function App(props: AppProps) {
       <Head>
         <link href={asset("/global.css")} rel="stylesheet" />
         <link
+          href="https://www.unpkg.com/bootstrap-icons@1.10.4/font/bootstrap-icons.css"
           rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
         />
       </Head>
       <props.Component />

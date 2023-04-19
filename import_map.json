@@ -1,6 +1,7 @@
 {
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.1.5/",
+    "$sqlite/": "https://deno.land/x/sqlite@v3.7.1/",
     "$http/": "https://deno.land/std@0.184.0/http/",
     "preact": "https://esm.sh/preact@10.13.2",
     "preact/": "https://esm.sh/preact@10.13.2/",
