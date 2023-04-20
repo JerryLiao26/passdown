@@ -4,15 +4,15 @@ import { Fragment, h } from "preact";
 import { Head } from "$fresh/runtime.ts";
 import LoginFrame from "../islands/LoginFrame.tsx";
 
-export default function Login() {
+export default function Register() {
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>Register</title>
       </Head>
       <div className="pd-page pd-page-centered">
-        <h2>Sign in to Postdown</h2>
-        <LoginFrame mode="login" />
+        <h2>Register to Postdown</h2>
+        <LoginFrame mode="register" />
       </div>
     </>
   );

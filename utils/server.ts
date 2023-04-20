@@ -1,17 +1,36 @@
+import { crypto, toHashString, DigestAlgorithm } from "$crypto/mod.ts";
 import { setCookie, getCookies, deleteCookie } from "$http/cookie.ts";
+import { find } from "utils/db.ts";
+
+export async function getCryptoString(rawString: string, cryptoMethod: string) {
+  const buffer = await crypto.subtle.digest(
+    cryptoMethod as DigestAlgorithm,
+    new TextEncoder().encode(rawString)
+  );
+  return toHashString(buffer);
+}
 
 export function checkToken(req: Request) {
   const cookies = getCookies(req.headers);
-  if (cookies && cookies["pd-user-token"]) {
-    return true;
+  if (cookies) {
+    const token = find(
+      "Token",
+      {
+        token: cookies["pd-user-token"] || "",
+      },
+      ["user_id"]
+    );
+    if (token.length > 0) {
+      return token[0][0] as string;
+    }
   }
   return false;
 }
 
-export function setToken(res: Response) {
+export function setToken(res: Response, token: string) {
   setCookie(res.headers, {
     name: "pd-user-token",
-    value: "testTEST123!@#",
+    value: token,
     path: "/",
   });
 }
@@ -21,7 +40,12 @@ export function clearToken(res: Response) {
 }
 
 export function makeSuccessResponse(
-  data: Record<string, unknown> | string | number | boolean
+  data:
+    | Record<string, unknown>
+    | Record<string, unknown>[]
+    | string
+    | number
+    | boolean
 ) {
   return new Response(
     JSON.stringify({

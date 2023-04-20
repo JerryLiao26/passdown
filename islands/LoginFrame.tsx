@@ -1,13 +1,20 @@
 /** @jsx h */
-import { h } from "preact";
+/** @jsxFrag Fragment */
+import { Fragment, h } from "preact";
 import { useState, useEffect } from "preact/hooks";
 import { showLoading, hideLoading } from "utils/ui.ts";
 
-export default function LoginFrame() {
+interface LoginFrameProps {
+  mode: "login" | "register";
+}
+
+export default function LoginFrame(props: LoginFrameProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const checkUserLogin = async () => {
     const resp = await fetch("/api/user/login");
@@ -37,14 +44,44 @@ export default function LoginFrame() {
     return false;
   };
 
+  const doUserRegister = async () => {
+    const resp = await fetch("/api/user/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    const respJson = await resp.json();
+    if (respJson.success) {
+      location.href = "/login";
+      return true;
+    }
+    return false;
+  };
+
   useEffect(() => {
-    checkUserLogin();
+    props.mode === "login" && checkUserLogin();
   }, []);
 
   const onSubmit = async () => {
     showLoading();
-    if (email && password) {
+
+    // Do request
+    if (email && password && props.mode === "login") {
       await doUserLogin();
+    } else if (
+      email &&
+      password &&
+      confirmPassword &&
+      props.mode === "register"
+    ) {
+      if (password !== confirmPassword) {
+        setConfirmPasswordError(true);
+      } else {
+        await doUserRegister();
+      }
     }
 
     // Set error
@@ -53,6 +90,9 @@ export default function LoginFrame() {
     }
     if (!password) {
       setPasswordError(true);
+    }
+    if (!confirmPassword && props.mode === "register") {
+      setConfirmPasswordError(true);
     }
     hideLoading();
   };
@@ -81,8 +121,23 @@ export default function LoginFrame() {
           setPassword((e.target as HTMLInputElement).value);
         }}
       />
+      {props.mode === "register" ? (
+        <>
+          <span className="pd-login-input-label">Confirm Password</span>
+          <input
+            className={`pd-login-input${confirmPasswordError ? " error" : ""}`}
+            type="password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onInput={(e) => {
+              setConfirmPasswordError(false);
+              setConfirmPassword((e.target as HTMLInputElement).value);
+            }}
+          />
+        </>
+      ) : null}
       <button className="pd-login-btn" type="button" onClick={onSubmit}>
-        Sign in
+        {props.mode === "register" ? "Register" : "Sign in"}
       </button>
     </div>
   );

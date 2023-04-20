@@ -2,17 +2,28 @@
 import { h, render } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import showdown, { Converter } from "showdown";
-import { showLoading, hideLoading } from "utils/ui.ts";
+import { debounce, DebouncedFunction } from "$async/debounce.ts";
+import { hideLoading } from "utils/ui.ts";
+
+export enum EditorMode {
+  Edit,
+  Read,
+  Both,
+}
 
 interface EditorProps {
-  id: string;
-  allowMode: "edit" | "read" | "both";
+  id: number;
+  title: string;
+  content: string;
+  allowMode: EditorMode;
 }
 
 let shadow: ShadowRoot | null = null;
 let shadowRoot: HTMLDivElement | null = null;
 let converter: Converter | null = null;
-let scrollingSide: "edit" | "read" | null = null;
+let scrollingSide: EditorMode | null = null;
+let debouncedOnSave: DebouncedFunction | null = null;
+
 export default function Editor(props: EditorProps) {
   const [mode, setMode] = useState(props.allowMode);
   const [prevMode, setPrevMode] = useState(props.allowMode);
@@ -23,7 +34,7 @@ export default function Editor(props: EditorProps) {
   const readViewRef = useRef(null);
   const editViewRef = useRef(null);
 
-  const checkSyncScroll = (scrollSide: "edit" | "read") => {
+  const checkSyncScroll = (scrollSide: EditorMode) => {
     if (scrollingSide && scrollingSide !== scrollSide) {
       scrollingSide = null;
       return false;
@@ -33,14 +44,14 @@ export default function Editor(props: EditorProps) {
   };
 
   // Sync scroll on both sides
-  const onScroll = (scrollSide: "edit" | "read") => {
+  const onScroll = (scrollSide: EditorMode) => {
     // Do not trigger sync on other side
     if (!checkSyncScroll(scrollSide)) {
       return;
     }
 
     const currentElement =
-      scrollSide === "read"
+      scrollSide === EditorMode.Read
         ? readViewRef.current
         : editViewRef.current &&
           (editViewRef.current as HTMLDivElement).querySelector("textarea");
@@ -53,7 +64,7 @@ export default function Editor(props: EditorProps) {
 
       // Sync scroll ratio
       const syncElement =
-        scrollSide === "read"
+        scrollSide === EditorMode.Edit
           ? editViewRef.current &&
             (editViewRef.current as HTMLDivElement).querySelector("textarea")
           : readViewRef.current;
@@ -64,6 +75,32 @@ export default function Editor(props: EditorProps) {
           (currentScrollPosition / currentScrollHeight);
       }
     }
+  };
+
+  // Unload listener
+  const onUnload = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    e.returnValue = "";
+    return false;
+  };
+
+  // Save changes
+  const onSave = async (content: string) => {
+    addEventListener("beforeunload", onUnload);
+
+    // Send request
+    await fetch("/api/post", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: props.id,
+        title: props.title,
+        content,
+      }),
+    });
+
+    // Remove listener
+    removeEventListener("beforeunload", onUnload);
   };
 
   // Render converted content to shadow root
@@ -90,7 +127,7 @@ export default function Editor(props: EditorProps) {
   const modeChangeListener = (e: CustomEvent) => {
     if (
       e.detail &&
-      (props.allowMode === e.detail || props.allowMode === "both")
+      (props.allowMode === e.detail || props.allowMode === EditorMode.Both)
     ) {
       setMode(e.detail);
     }
@@ -98,7 +135,6 @@ export default function Editor(props: EditorProps) {
 
   // Init event listeners
   useEffect(() => {
-    showLoading();
     addEventListener("ModeChange", modeChangeListener);
 
     return () => {
@@ -110,7 +146,7 @@ export default function Editor(props: EditorProps) {
   // Note: cannot access latest state at global function
   useEffect(() => {
     // Sync scroll when switched to both mode
-    if (mode === "both" && prevMode !== "both") {
+    if (mode === EditorMode.Both && prevMode !== EditorMode.Both) {
       onScroll(prevMode);
     }
     setPrevMode(mode);
@@ -123,19 +159,12 @@ export default function Editor(props: EditorProps) {
 
   // Init conversion
   useEffect(() => {
-    const loadPost = async () => {
-      if (props.id) {
-        const resp = await fetch("/api/post");
-        const respJson = await resp.json();
-        if (respJson.success) {
-          setDisplayContent(respJson.data);
-          convertText(respJson.data);
-          hideLoading();
-        }
-      }
-    };
-    loadPost();
-  }, [props.id]);
+    if (props.title) {
+      setDisplayContent(props.content);
+      convertText(props.content);
+      hideLoading();
+    }
+  }, [props.title]);
 
   const convertText = (text: string) => {
     // Init converter
@@ -146,23 +175,42 @@ export default function Editor(props: EditorProps) {
     // Save display text
     setDisplayContent(text);
 
-    // Convert text and save
+    // Convert text
     setConvertedContent(converter.makeHtml(text));
+
+    // Trigger save
+    if (text !== props.content) {
+      if (!debouncedOnSave) {
+        debouncedOnSave = debounce(onSave, 2000);
+      }
+      debouncedOnSave(text);
+    }
+  };
+
+  const getModeText = (mode: EditorMode) => {
+    switch (mode) {
+      case EditorMode.Read:
+        return "read";
+      case EditorMode.Edit:
+        return "edit";
+      case EditorMode.Both:
+        return "both";
+    }
   };
 
   return (
-    <div className={`pd-editor pd-mode-${mode}`}>
-      {props.allowMode !== "read" ? (
+    <div className={`pd-editor pd-mode-${getModeText(mode)}`}>
+      {props.allowMode !== EditorMode.Read ? (
         <div className="pd-edit-view" ref={editViewRef}>
           <textarea
             placeholder="Some Markdown here"
             onScroll={() => {
-              onScroll("edit");
+              onScroll(EditorMode.Edit);
             }}
             onPaste={() => {
               // Sync scroll again after render
               setTimeout(() => {
-                onScroll("edit");
+                onScroll(EditorMode.Edit);
               }, 100);
             }}
             onInput={(e) => {
@@ -172,12 +220,12 @@ export default function Editor(props: EditorProps) {
           />
         </div>
       ) : null}
-      {props.allowMode !== "edit" ? (
+      {props.allowMode !== EditorMode.Edit ? (
         <div
           className="pd-read-view"
           ref={readViewRef}
           onScroll={() => {
-            onScroll("read");
+            onScroll(EditorMode.Read);
           }}
         />
       ) : null}

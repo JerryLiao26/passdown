@@ -5,6 +5,7 @@
 
 .pd-page {
   width: 100vw;
+  min-width: 375px;
   height: 100vh;
   padding: 0.75rem;
   display: flex;
@@ -288,3 +289,56 @@ button {
   display: none;
 }
 /* Editor styles end */
+
+/* HomeBar styles start */
+.pd-home-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pd-home-bar button {
+  width: unset;
+}
+
+.pd-home-bar .pd-home-user-info button {
+  margin-left: 8px;
+}
+/* HomeBar styles end */
+
+/* PostList styles start */
+.pd-post-list {
+  width: 100%;
+  display: grid;
+  row-gap: 16px;
+  column-gap: 16px;
+  grid-template-columns: auto auto auto auto;
+  margin-top: 16px;
+  padding-bottom: 16px;
+  overflow: auto;
+}
+
+.pd-post-list .pd-post {
+  width: 100%;
+  min-width: 180px;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+  padding: 1rem;
+  display: flex;
+  font-size: 16px;
+  flex-direction: column;
+}
+
+.pd-post-list .pd-post:last-child {
+  margin-right: 0;
+}
+
+.pd-post-list .pd-post span {
+  margin-bottom: 8px;
+}
+
+.pd-post-list .pd-post .pd-post-title {
+  font-weight: 500;
+}
+/* PostList styles end */
