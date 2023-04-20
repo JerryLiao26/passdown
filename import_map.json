@@ -2,6 +2,7 @@
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.1.5/",
     "$sqlite/": "https://deno.land/x/sqlite@v3.7.1/",
+    "$usid/": "https://deno.land/x/usid@2.0.0/",
     "$crypto/": "https://deno.land/std@0.184.0/crypto/",
     "$async/": "https://deno.land/std@0.184.0/async/",
     "$http/": "https://deno.land/std@0.184.0/http/",

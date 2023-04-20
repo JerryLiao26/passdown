@@ -312,7 +312,7 @@ button {
   display: grid;
   row-gap: 16px;
   column-gap: 16px;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   margin-top: 16px;
   padding-bottom: 16px;
   overflow: auto;
@@ -340,5 +340,11 @@ button {
 
 .pd-post-list .pd-post .pd-post-title {
   font-weight: 500;
+}
+
+.pd-post-list .pd-post .pd-post-digest {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 /* PostList styles end */

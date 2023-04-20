@@ -4,6 +4,7 @@ import {
   makeErrorResponse,
   makeSuccessResponse,
 } from "utils/server.ts";
+import { uid } from "$usid/mod.ts";
 import { del, find, insert, update } from "utils/db.ts";
 
 export const handler: Handlers = {
@@ -40,7 +41,9 @@ export const handler: Handlers = {
     const content = reqJson.content || "";
     const tokenUserId = checkToken(req);
     if (tokenUserId) {
+      const postId = uid(12);
       const post = insert("Post", {
+        id: postId,
         title,
         content,
         user_id: tokenUserId,

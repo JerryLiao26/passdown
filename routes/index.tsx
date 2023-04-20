@@ -34,7 +34,7 @@ export const handler: Handlers<HomeProps> = {
         return ctx.render({
           name: user[0][0] as string,
           list: posts.map((post) => ({
-            id: post[0] as number,
+            id: post[0] as string,
             title: post[1] as string,
             content: post[2] as string,
             shared: post[3] as boolean,

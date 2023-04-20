@@ -12,7 +12,7 @@ export enum EditorMode {
 }
 
 interface EditorProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   allowMode: EditorMode;
@@ -22,7 +22,7 @@ let shadow: ShadowRoot | null = null;
 let shadowRoot: HTMLDivElement | null = null;
 let converter: Converter | null = null;
 let scrollingSide: EditorMode | null = null;
-let debouncedOnSave: DebouncedFunction | null = null;
+let debouncedOnSave: DebouncedFunction<string[]> | null = null;
 
 export default function Editor(props: EditorProps) {
   const [mode, setMode] = useState(props.allowMode);

@@ -9,7 +9,7 @@ import TopBar from "../../islands/TopBar.tsx";
 import Editor, { EditorMode } from "../../islands/Editor.tsx";
 
 interface PostProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   isLogined: boolean;
@@ -19,7 +19,7 @@ interface PostProps {
 export const handler: Handlers<PostProps> = {
   GET(req, ctx) {
     const tokenUserId = checkToken(req);
-    const postId = Number(ctx.params.id);
+    const postId = ctx.params.id;
     const post = find(
       "Post",
       tokenUserId

@@ -30,7 +30,7 @@ function prepareDB(tableName: string) {
     case "Post":
       db.execute(`
         CREATE TABLE IF NOT EXISTS post (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          id VARCHAR(64) PRIMARY KEY,
           user_id INTEGER,
           title VARCHAR(256),
           content TEXT,
@@ -95,7 +95,7 @@ export function insert(
 
 export function update(
   tableName: string,
-  id: number,
+  id: number | string,
   userUpdateObject: { [key: string]: string | number | boolean }
 ) {
   const db = prepareDB(tableName);
@@ -103,10 +103,10 @@ export function update(
   const updateQuery = db.prepareQuery(
     `UPDATE ${tableName.toLowerCase()} SET ${Object.keys(updateObject)
       .map((updateKey) => `${updateKey} = :${updateKey}`)
-      .join(", ")} WHERE id=${id}`
+      .join(", ")} WHERE id = :id`
   );
   try {
-    updateQuery.all(updateObject);
+    updateQuery.all({ ...updateObject, id });
     return find(tableName, userUpdateObject, ["id"], 1);
   } catch (e) {
     console.error("Insert error:", e);

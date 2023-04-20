@@ -2,11 +2,11 @@
 import { h } from "preact";
 
 interface PostListProps {
-  posts: { id: number; title: string; content: string; shared: boolean }[];
+  posts: { id: string; title: string; content: string; shared: boolean }[];
 }
 
 export default function PostList(props: PostListProps) {
-  const onEdit = (id: number) => {
+  const onEdit = (id: string) => {
     location.href = `post/${id}`;
   };
 
